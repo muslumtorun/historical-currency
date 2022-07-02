@@ -51,13 +51,13 @@ array("buying" => 0, "selling" => 0, "name" => "Currency Name", "name_tr" => "Ku
 ```php
 $fetch->getURL();
 ```
-Dönen yanıt: `string`
+Dönen yanıt: `https://tcmb.gov.tr/kurlar/...`
 
 ### 5. Raw XML verisi
 ```php
 $fetch->getXML();
 ```
-Dönen yanıt: `string`
+Dönen yanıt: `xml string`
 
 ### 6. Kur kodu geçerliğinin kontrolü
 ```php
