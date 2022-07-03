@@ -1,16 +1,15 @@
 # Geçmişe Dayalı Döviz Kurları - PHP Library
 ### a) Ne işe yarar
-TCMB veritabanında yayınlanmış; belirtilen tarihte kayıtlı döviz kurlarına ait XML datalarını almanıza yarayan bir kütüphanedir. Sizde kendi API'nizi oluşturabilir ya da daha da geliştirebilir ve kendi projelerinizde farklı amaçlar için kullanabilirsiniz. Yayınlanmış olan örnek XML kaynağını incelemek için [https://tcmb.gov.tr/kurlar/today.xml](https://tcmb.gov.tr/kurlar/today.xml) adresini ziyaret edebilirsiniz.
+TCMB veritabanında yayınlanmış, belirtilen tarihte kayıtlı döviz kurlarına ait XML datalarını almanıza yarayan bir kütüphanedir. Sizde kendi API'nizi oluşturabilir ya da daha da geliştirebilir ve kendi projelerinizde farklı amaçlar için kullanabilirsiniz. Yayınlanmış olan örnek XML kaynağını incelemek için [https://tcmb.gov.tr/kurlar/today.xml](https://tcmb.gov.tr/kurlar/today.xml) adresini ziyaret edebilirsiniz.
 
 ### b) Özellikler
-- Tarih belirtiebilme
-- Belirtilen tarihe ait URL'nin türetilmesi
-- Belirtilen tarihe ait ham XML verisinin eldesi
-- Çoklu kur bilgileri ve kurlara ait kod listesi
-- Belirtilen koda ait kurların alınması
+- Seçili tarihe ait tekil ya da çoğul kur bilgileri,
+- Forex ya da bankaya ait değerlerin tercihi,
+- Verilerin ham XML olarak elde edilmesi,
+- Dataya giden çözümlenmiş URL
 
 ### c) Bunlar aklınızda bulunsun
-1. TCMB kayıtlarında hafta sonları için kur bilgi yer almaz. Dolayısıyla kütüphane o haftaya ait Cuma günü verilerini getirir.
+1. TCMB kayıtlarında hafta sonları için kur bilgisi yer almaz. Dolayısıyla kütüphane o haftaya ait Cuma günü verilerini getirir.
 2. 01 Mayıs 1996 tarihinden sonraki kayıtlara ulaşılabilinmektedir.
 3. Bazı kur bilgileri TCMB tarafından boş bırakılmış olabilir.
 
@@ -29,7 +28,7 @@ $fetch = new TCMB\Historical\HCurrency("2021-05-16");
 ### 2. Metodlar
 - `getCurrencies()` Belirtilen tarihe ait tüm kurları _**array**_ olarak getirir.
 - `getCurrency()` Tek bir _**string**_ parametre alır ve parametreye göre kur bilgilerini _**array**_ olarak getirir. Default olarak _usd_ ayarlanmıştır.
-- `listCurrencyCodes()` Geçerli kur kodlarını ve ülke bilgilerini _**array**__ olarak getirir.
+- `listCurrencyCodes()` Geçerli kur kodlarını ve ülke bilgilerini _**array**_ olarak getirir.
 - `isCurrencyCodeValid()` Tek bir _**string**_ parametre alır ve seçili parametrenin geçerliliğini kontrol eder. _true_ ya da _false_ döndürür.
 - `getURL()` Çözümlenen TCMB url'sini _**string**_ olarak getirir.
 - `getXML()` Belirtilen tarihe ait ham XML verisini _**string**_ olarak döndürür.
