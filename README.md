@@ -32,6 +32,7 @@ $fetch = new TCMB\Historical\HCurrency("2021-05-16");
 - `isCurrencyCodeValid()` Tek bir _**string**_ parametre alır ve seçili parametrenin geçerliliğini kontrol eder. _true_ ya da _false_ döndürür.
 - `getURL()` Çözümlenen TCMB url'sini _**string**_ olarak getirir.
 - `getXML()` Belirtilen tarihe ait ham XML verisini _**string**_ olarak döndürür.
+- `getJSON()`Belirtilen tarihe ait verileri _**string**_ olarak _**JSON**_ formatında verir.
 - `getDate()`Belirtilen tarihi _**string**_ olarak geri döndürür.
 
 ## Örnek
