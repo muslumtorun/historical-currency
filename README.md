@@ -1,13 +1,14 @@
-# Geçmişe Dayalı Döviz Kurları - PHP [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Güncel ve Geçmişe Dayalı Döviz Kurları - PHP [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ### a) Ne işe yarar
-TCMB veritabanında yayınlanmış, belirtilen tarihte kayıtlı döviz kurlarına ait XML datalarını almanıza yarayan bir kütüphanedir. Sizde kendi API'nizi oluşturabilir ya da daha da geliştirebilir ve kendi projelerinizde farklı amaçlar için kullanabilirsiniz. Yayınlanmış olan örnek XML kaynağını incelemek için [https://tcmb.gov.tr/kurlar/today.xml](https://tcmb.gov.tr/kurlar/today.xml) adresini ziyaret edebilirsiniz.
+TCMB veritabanında yayınlanmış, belirtilen tarihte kayıtlı döviz kurlarına ait XML datalarını almanıza yarayan bir kütüphanedir. Sizde kendi API servisinizi oluşturabilir ya da daha da geliştirebilir ve kendi projelerinizde farklı amaçlar için kullanabilirsiniz. Yayınlanmış olan örnek XML kaynağını incelemek için [https://tcmb.gov.tr/kurlar/today.xml](https://tcmb.gov.tr/kurlar/today.xml) adresini ziyaret edebilirsiniz.
 
 ### b) Özellikler
+- Günün kur bilgileri,
 - Seçili tarihe ait tekil ya da çoğul kur bilgileri,
 - Forex ya da bankaya ait değerlerin tercihi,
-- Verilerin ham XML olarak elde edilmesi,
-- Dataya giden çözümlenmiş URL
+- Verilerin ham XML, JSON ve Array olarak elde edilmesi,
+- Dataya giden çözümlenmiş TCMB URL'si
 
 ### c) Bunlar aklınızda bulunsun
 1. TCMB kayıtlarında hafta sonları için kur bilgisi yer almaz. Dolayısıyla kütüphane o haftaya ait Cuma günü verilerini getirir.
@@ -24,7 +25,7 @@ Tüm metodlar `HCurrency` sınıfı üzerinden çağrıacak olup, bu sınıf şu
 
 ### 1. Sınıfın çağrılması
 ```php
-$fetch = new TCMB\Historical\HCurrency("2021-05-16");
+$fetch = new TCMB\Historical\HCurrency("2021-05-16"); //günün kurları için boş bırakınız
 ```
 ### 2. Metodlar
 - `getCurrencies()` Belirtilen tarihe ait tüm kurları _**array**_ olarak getirir.
@@ -36,12 +37,42 @@ $fetch = new TCMB\Historical\HCurrency("2021-05-16");
 - `getJSON()`Belirtilen tarihe ait verileri _**string**_ olarak _**JSON**_ formatında verir.
 - `getDate()`Belirtilen tarihi _**string**_ olarak geri döndürür.
 
+### 3. Kur Tipleri
+```php
+use TCMB\Historical\Types\CurrencyCode;
+```
+
+- `CurrencyCode::USD`Amerikan Doları
+- `CurrencyCode::EUR`Euro
+- ...
+
+Diğer türler için Types'leri inceleyebilirsiniz.
+
+### 4. Cevap (Karşıdan dönen) Tipleri
+```php
+use TCMB\Historical\Types\Response;
+```
+
+- `Response::Kod`Uluslar arası kur kodu
+- `CurrencyCode::BanknoteBuying`Banka alış değerleri
+- ...
+
+Diğer türler için Types'leri inceleyebilirsiniz.
+
+
 ## Örnek
 ```php
-$fetch = new TCMB\Historical\HCurrency("2022-06-29");
-$eur = $fetch->getCurrency("eur");
+use TCMB\Historical\HCurrency;
+use TCMB\Historical\Types\CurrencyCode;
+use TCMB\Historical\Types\Response;
 
-$kur_adi = $eur["Isim"];
-$kur_satis = $eur["BanknoteSelling"] //Forex için; ForexSelling
-$kur_alis = $eur["BanknoteBuying"] //Forex için; ForexBuying
+//bugün için parametreyi boş bırakın
+$fetch = new HCurrency("2022-06-29");
+
+//euro bilgileri için
+$eur = $fetch->getCurrency(CurrencyCode::EUR);
+
+$kur_adi = $eur(Response::ISIM);
+$kur_satis = $eur(Response::BANKNOTESELLING);
+$kur_alis = $eur(Response::BANKNOTEBUYING);
 ```

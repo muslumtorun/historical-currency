@@ -6,7 +6,7 @@
  * @see https://github.com/muslumtorun/historical-currency/ The Historical Currency GitHub project
  * 
  * @author Muslum Torun <https://benahce.net/muslumtorun>
- * @copyright 2022 Muslum Torun
+ * @copyright 2024 Muslum Torun
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  * @note This program is distributed in the hope that it will be useful - WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -15,17 +15,18 @@
 
 namespace TCMB\Historical;
 
-use TCMB\Historical\AbstractHCurrency;
-use TCMB\Historical\InterfaceHCurrency;
-use TCMB\Historical\ExceptionHCurrency;
-use TCMB\Historical\Utility;
+use TCMB\Historical\Abstracts\AbstractHCurrency;
+use TCMB\Historical\Errors\ExceptionHCurrency;
+use TCMB\Historical\Utilities\Utility;
+use TCMB\Historical\Types\Response;
+use TCMB\Historical\Types\CurrencyCode;
 use Exception;
 
 /**
  * A library that can be used to get historical currency rates.
  */
 
-final class HCurrency extends AbstractHCurrency implements InterfaceHCurrency
+final class HCurrency extends AbstractHCurrency
 {
     /** Activated after this date. (yyyy-mm-dd) */
     const MINDATE = "1996-05-01";
@@ -36,9 +37,9 @@ final class HCurrency extends AbstractHCurrency implements InterfaceHCurrency
     protected $arraydata;
 
     /** @param string $date format is yyyy-mm-dd */
-    public function __construct(string $date)
+    public function __construct(string $date = null)
     {
-        $this->date = $date;
+        $this->date = !$date ? date("Y-m-d") : $date;
         $this->init();
     }
 
@@ -56,15 +57,11 @@ final class HCurrency extends AbstractHCurrency implements InterfaceHCurrency
 
         $this->url = $this->resolveUrl($this->date);
 
-        try {
-            $fetch = (string) $this->fetch($this->url); // get url content
-            $fixedXML = $this->fixXMLString($fetch);
+        $fetch = (string) $this->fetch($this->url); // get url content
+        $fixedXML = $this->fixXMLString($fetch);
 
-            $this->xmldata = $fixedXML; // keep xml string
-            $this->prepareEnvironment(); // xml data processing
-        } catch (Exception $err) {
-            throw new ExceptionHCurrency($err->getMessage());
-        }
+        $this->xmldata = $fixedXML; // keep xml string
+        $this->prepareEnvironment(); // xml data processing
     }
 
     /**
@@ -98,33 +95,9 @@ final class HCurrency extends AbstractHCurrency implements InterfaceHCurrency
             }
 
             $this->arraydata = $container;
-        } catch (Exception $err) {
-            throw new ExceptionHCurrency($err->getMessage());
+        } catch (ExceptionHCurrency $err) {
+            echo $err->errorMessage();
         }
-    }
-
-    /**
-     * List of the supported currency codes.
-     * @return array [CurrencyName => United States Dollar, Isim => Amekian Doları, CurrencyCode => USD]
-     */
-
-    public function listCurrencyCodes(): array
-    {
-        if (!$this->arraydata) {
-            throw new ExceptionHCurrency("XML string could not be retrieved from " . $this->url);
-        }
-
-        $container = [];
-        foreach ($this->arraydata as $currency) {
-            $rows = [];
-            $rows["CurrencyName"] = (string) $currency["CurrencyName"];
-            $rows["Isim"] = (string) $currency["Isim"];
-            $rows["CurrencyCode"] = (string) $currency["CurrencyCode"];
-
-            array_push($container, $rows);
-        }
-
-        return $container;
     }
 
     /**
@@ -135,13 +108,8 @@ final class HCurrency extends AbstractHCurrency implements InterfaceHCurrency
 
     public function isCurrencyCodeValid(string $currency_code): bool
     {
-        foreach ($this->listCurrencyCodes() as $item) {
-            if (in_array(strtoupper($currency_code), $item)) {
-                return true;
-            }
-        }
-
-        return false;
+        $currency_code = strtoupper($currency_code);
+        return defined(CurrencyCode::class . "::" . $currency_code);
     }
 
     /**
@@ -155,12 +123,12 @@ final class HCurrency extends AbstractHCurrency implements InterfaceHCurrency
         if (!$this->arraydata) {
             throw new ExceptionHCurrency("XML string could not be retrieved from " . $this->url);
         } else if (!$this->isCurrencyCodeValid($currency_code)) {
-            throw new ExceptionHCurrency("{$currency_code} currency code is invalid! You can list of the valid codes using listCurrencyCodes() method.");
+            throw new ExceptionHCurrency("{$currency_code} currency code is invalid! You can list of the valid codes by using listCurrencyCodes() method.");
         }
 
         foreach ($this->arraydata as $currency) {
-            if ($currency["CurrencyCode"] == strtoupper($currency_code)) {
-                return $currency;
+            if ($currency[Response::CURRENCYCODE] == strtoupper($currency_code)) {
+                return fn($response) => $currency[$response];
             }
         }
 
