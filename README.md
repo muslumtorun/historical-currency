@@ -30,7 +30,6 @@ $fetch = new TCMB\Historical\HCurrency("2021-05-16"); //günün kurları için b
 ### 2. Metodlar
 - `getCurrencies()` Belirtilen tarihe ait tüm kurları _**array**_ olarak getirir.
 - `getCurrency()` Tek bir _**string**_ parametre alır ve parametreye göre kur bilgilerini _**array**_ olarak getirir. Default olarak _usd_ ayarlanmıştır.
-- `listCurrencyCodes()` Geçerli kur kodlarını ve ülke bilgilerini _**array**_ olarak getirir.
 - `isCurrencyCodeValid()` Tek bir _**string**_ parametre alır ve seçili parametrenin geçerliliğini kontrol eder. _true_ ya da _false_ döndürür.
 - `getURL()` Çözümlenen TCMB url'sini _**string**_ olarak getirir.
 - `getXML()` Belirtilen tarihe ait ham XML verisini _**string**_ olarak döndürür.
