@@ -118,7 +118,7 @@ final class HCurrency extends AbstractHCurrency
      * @return array
      */
 
-    public function getCurrency(string $currency_code = "usd"): array
+    public function getCurrency(string $currency_code = "usd"): void
     {
         if (!$this->arraydata) {
             throw new ExceptionHCurrency("XML string could not be retrieved from " . $this->url);
@@ -132,7 +132,7 @@ final class HCurrency extends AbstractHCurrency
             }
         }
 
-        return [];
+        return;
     }
 
     /**
